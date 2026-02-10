@@ -1,0 +1,27 @@
+import { Router } from "express";
+import { AnimalController } from "../controllers/animalController";
+import { handleInputErrors } from "../middlewares/validation";
+import { body, param } from "express-validator";
+
+
+const animalRouter = Router();
+
+animalRouter.get("/", AnimalController.getAllAnimals);
+
+animalRouter.get("/:id",
+    param("id").isMongoId().withMessage("ID de animal no válido"),
+    handleInputErrors,
+    AnimalController.getAnimalByID);
+
+animalRouter.post("/",
+    body("name").notEmpty().withMessage("El nombre es obligatorio"),
+    body("type").notEmpty().withMessage("El tipo de animal es obligatorio"),
+    body("raza").notEmpty().withMessage("La raza es obligatoria"),
+    body("age").notEmpty().withMessage("La edad es obligatoria"),
+    body("size").notEmpty().withMessage("El tamaño es obligatorio"),
+    body("description").notEmpty().withMessage("La descripción es obligatoria"),
+    body("location").notEmpty().withMessage("La ubicación es obligatoria"),
+    handleInputErrors,
+    AnimalController.createAnimal)
+
+export default animalRouter;
