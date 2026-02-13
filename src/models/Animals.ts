@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose"
+import mongoose, { Document, Schema, Types } from "mongoose"
 
 export enum ProvinciaArgentina {
     BUENOS_AIRES = "Buenos Aires",
@@ -26,8 +26,6 @@ export enum ProvinciaArgentina {
     TIERRA_DEL_FUEGO = "Tierra del Fuego",
     TUCUMAN = "Tucumán"
 }
-
-
 type AnimalType = "Perro" | "Gato";
 type AnimalSize = "Pequeño" | "Mediano" | "Grande";
 type AnimalAge = "Cachorro" | "Joven" | "Adulto" | "Senior";
@@ -37,24 +35,26 @@ type LocationType = ProvinciaArgentina
 export interface IAnimal extends Document {
     name: string,
     type: AnimalType,
-    raza: string,
+    breed: string,
     age: AnimalAge,
     size: AnimalSize,
     description: string,
     location: LocationType,
     imageUrl: string,
-    createdAt: Date
+    user: Types.ObjectId
+
 }
 
 const animalSchema: Schema = new mongoose.Schema({
     name: { type: String, required: true },
     type: { type: String, required: true },
-    raza: { type: String, required: true },
+    breed: { type: String, required: true },
     age: { type: String, required: true },
     size: { type: String, required: true },
     description: { type: String, required: true },
     location: { type: String, required: true },
-    imageUrl: { type: String }
+    imageUrl: { type: String },
+    user: { type: Types.ObjectId, ref: "User", required: true }
 },
     {
         timestamps: true

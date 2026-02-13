@@ -8,7 +8,7 @@ export interface IUser extends Document {
     createdAt: Date
 }
 const userSchema: Schema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     telphone: { type: String, required: true },
