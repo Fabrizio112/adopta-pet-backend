@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/authController";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { handleInputErrors } from "../middlewares/validation";
 
 const authRouter = Router();
@@ -23,5 +23,10 @@ authRouter.post("/login",
     body("password").notEmpty().withMessage("La contraseña es obligatoria"),
     handleInputErrors,
     AuthController.loginUser);
+
+authRouter.get("/profile/:id",
+    param("id").isMongoId().withMessage("ID de usuario no válido"),
+    handleInputErrors,
+    AuthController.getProfile);
 
 export default authRouter; 

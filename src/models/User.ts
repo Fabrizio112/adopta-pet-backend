@@ -1,18 +1,19 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, PopulatedDoc, Schema, Types } from "mongoose";
+import { IAnimal } from "./Animals";
 
 export interface IUser extends Document {
     name: string,
     email: string,
     password: string,
     telphone: string,
-    createdAt: Date
+    animals: PopulatedDoc<IAnimal & Document>[]
 }
 const userSchema: Schema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     telphone: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now }
+    animals: [{ type: Types.ObjectId, ref: "Animal" }]
 }, {
     timestamps: true
 });
