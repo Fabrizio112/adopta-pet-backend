@@ -6,14 +6,16 @@ export interface IUser extends Document {
     email: string,
     password: string,
     telphone: string,
-    animals: PopulatedDoc<IAnimal & Document>[]
+    animals: PopulatedDoc<IAnimal & Document>[],
+    favorites: PopulatedDoc<IAnimal & Document>[]
 }
 const userSchema: Schema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     telphone: { type: String, required: true },
-    animals: [{ type: Types.ObjectId, ref: "Animal" }]
+    animals: [{ type: Types.ObjectId, ref: "Animal" }],
+    favorites: [{ type: Types.ObjectId, ref: "Animal" }]
 }, {
     timestamps: true
 });

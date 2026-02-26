@@ -22,7 +22,7 @@ export class AuthController {
     static loginUser = async (req: Request, res: Response) => {
         try {
             const { email, password } = req.body;
-            const user = await User.findOne({ email }).populate("animals");
+            const user = await User.findOne({ email }).populate("animals").populate("favorites");
             if (!user) {
                 const error = new Error("Usuario no encontrado");
                 return res.status(404).json({ error: error.message });
@@ -39,8 +39,7 @@ export class AuthController {
     static getProfile = async (req: Request, res: Response) => {
         try {
             const userId = req.params.id
-            console.log(userId)
-            const user = await User.findById(userId).populate("animals");
+            const user = await User.findById(userId).populate("animals").populate("favorites");
             if (!user) {
                 return res.status(404).json({ error: "Usuario no encontrado" })
             }

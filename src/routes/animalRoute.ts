@@ -41,4 +41,17 @@ animalRouter.delete("/:id",
     handleInputErrors,
     AnimalController.deleteAnimal);
 
+
+animalRouter.post("/:id/favorite",
+    param("id").isMongoId().withMessage("ID de animal no válido"),
+    body("userId").isMongoId().withMessage("ID de usuario no válido"),
+    handleInputErrors,
+    AnimalController.addToFavorites);
+
+animalRouter.delete("/:id/favorite",
+    param("id").isMongoId().withMessage("ID de animal no válido"),
+    body("userId").isMongoId().withMessage("ID de usuario no válido"),
+    handleInputErrors,
+    AnimalController.removeFromFavorites);
+
 export default animalRouter;

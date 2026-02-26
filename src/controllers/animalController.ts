@@ -64,4 +64,52 @@ export class AnimalController {
             return res.status(500).json({ message: "Ocurrio un error" });
         }
     }
+    static addToFavorites = async (req: Request, res: Response) => {
+        try {
+            const { userId } = req.body;
+            const animalId = req.params.id;
+            const user = await User.findById(userId);
+            const animal = await Animal.findById(animalId);
+            if (!user) {
+                return res.status(404).json({ message: "Usuario no encontrado" });
+            }
+            if (!animal) {
+                return res.status(404).json({ message: "Animal no encontrado" });
+            }
+            if (user.favorites.includes(animal._id)) {
+                return res.status(400).json({ message: "El animal ya está en favoritos" });
+            }
+            user.favorites.push(animal);
+            await user.save();
+            await user.populate('favorites');
+            return res.status(200).json({ message: "Animal agregado a favoritos", favorites: user.favorites });
+        } catch (error) {
+            return res.status(500).json({ message: "Ocurrio un error" });
+        }
+    }
+    static removeFromFavorites = async (req: Request, res: Response) => {
+        try {
+            const { userId } = req.body;
+            const animalId = req.params.id;
+            const user = await User.findById(userId);
+            const animal = await Animal.findById(animalId);
+            if (!user) {
+                return res.status(404).json({ message: "Usuario no encontrado" });
+            }
+            if (!animal) {
+                return res.status(404).json({ message: "Animal no encontrado" });
+            }
+            if (!user.favorites.includes(animal._id)) {
+                return res.status(400).json({ message: "El animal no está en favoritos" });
+            }
+
+            user.favorites = user.favorites.filter(fav => fav.toString() !== animal._id.toString());
+            await user.save();
+            await user.populate('favorites');
+            return res.status(200).json({ message: "Animal eliminado de favoritos", favorites: user.favorites });
+        }
+        catch (error) {
+            return res.status(500).json({ message: "Ocurrio un error" });
+        }
+    }
 }
