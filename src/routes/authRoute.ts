@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { AuthController } from "../controllers/authController";
+import { AuthController } from "../controllers/AuthController";
 import { body, param } from "express-validator";
 import { handleInputErrors } from "../middlewares/validation";
+import { authenticate } from "../middlewares/auth";
 
 const authRouter = Router();
 
@@ -24,9 +25,8 @@ authRouter.post("/login",
     handleInputErrors,
     AuthController.loginUser);
 
-authRouter.get("/profile/:id",
-    param("id").isMongoId().withMessage("ID de usuario no válido"),
-    handleInputErrors,
+authRouter.get("/profile",
+    authenticate,
     AuthController.getProfile);
 
 export default authRouter; 

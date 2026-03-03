@@ -66,9 +66,8 @@ export class AnimalController {
     }
     static addToFavorites = async (req: Request, res: Response) => {
         try {
-            const { userId } = req.body;
             const animalId = req.params.id;
-            const user = await User.findById(userId);
+            const user = req.user!;
             const animal = await Animal.findById(animalId);
             if (!user) {
                 return res.status(404).json({ message: "Usuario no encontrado" });
@@ -76,7 +75,8 @@ export class AnimalController {
             if (!animal) {
                 return res.status(404).json({ message: "Animal no encontrado" });
             }
-            if (user.favorites.includes(animal._id)) {
+            const inFavorites = user.favorites.some(fav => fav._id.toString() === animal._id.toString())
+            if (inFavorites) {
                 return res.status(400).json({ message: "El animal ya está en favoritos" });
             }
             user.favorites.push(animal);
@@ -89,9 +89,8 @@ export class AnimalController {
     }
     static removeFromFavorites = async (req: Request, res: Response) => {
         try {
-            const { userId } = req.body;
             const animalId = req.params.id;
-            const user = await User.findById(userId);
+            const user = req.user!;
             const animal = await Animal.findById(animalId);
             if (!user) {
                 return res.status(404).json({ message: "Usuario no encontrado" });
@@ -99,11 +98,12 @@ export class AnimalController {
             if (!animal) {
                 return res.status(404).json({ message: "Animal no encontrado" });
             }
-            if (!user.favorites.includes(animal._id)) {
+            const inFavorites = user.favorites.some(fav => fav._id.toString() === animal._id.toString())
+            if (!inFavorites) {
                 return res.status(400).json({ message: "El animal no está en favoritos" });
             }
 
-            user.favorites = user.favorites.filter(fav => fav.toString() !== animal._id.toString());
+            user.favorites = user.favorites.filter(fav => fav._id.toString() !== animal._id.toString());
             await user.save();
             await user.populate('favorites');
             return res.status(200).json({ message: "Animal eliminado de favoritos", favorites: user.favorites });

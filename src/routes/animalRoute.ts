@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { AnimalController } from "../controllers/animalController";
+import { AnimalController } from "../controllers/AnimalController";
 import { handleInputErrors } from "../middlewares/validation";
 import { body, param } from "express-validator";
+import { authenticate } from "../middlewares/auth";
 
 
 const animalRouter = Router();
@@ -43,14 +44,14 @@ animalRouter.delete("/:id",
 
 
 animalRouter.post("/:id/favorite",
+    authenticate,
     param("id").isMongoId().withMessage("ID de animal no válido"),
-    body("userId").isMongoId().withMessage("ID de usuario no válido"),
     handleInputErrors,
     AnimalController.addToFavorites);
 
 animalRouter.delete("/:id/favorite",
+    authenticate,
     param("id").isMongoId().withMessage("ID de animal no válido"),
-    body("userId").isMongoId().withMessage("ID de usuario no válido"),
     handleInputErrors,
     AnimalController.removeFromFavorites);
 
